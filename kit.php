@@ -121,6 +121,32 @@ if (!$kit) {
 
         <?php endif; ?>
 
+        <?php if (isset($_SESSION['user_id'])): ?>
+
+    <form method="POST" action="wishlist_add.php">
+
+        <input
+            type="hidden"
+            name="kit_id"
+            value="<?= $kit['kit_id'] ?>"
+        >
+
+        <button type="submit">
+            Toevoegen aan wishlist
+        </button>
+
+    </form>
+
+<?php else: ?>
+
+    <p>
+        <a href="login.php">
+            Log in om deze kit aan je wishlist toe te voegen.
+        </a>
+    </p>
+
+<?php endif; ?>
+
     </main>
 
 </body>

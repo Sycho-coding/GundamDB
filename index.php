@@ -71,21 +71,21 @@ $kits = $stmt->fetchAll();
 
         <nav>
             <a href="index.php">Home</a>
+<?php if (isset($_SESSION['user_id'])): ?>
 
-            <?php if (isset($_SESSION['user_id'])): ?>
+    <span>
+        Welkom, <?= htmlspecialchars($_SESSION['username']) ?>
+    </span>
 
-                <span>
-                    Welkom, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
+    <a href="wishlist.php">Mijn wishlist</a>
+    <a href="logout.php">Uitloggen</a>
 
-                <a href="logout.php">Uitloggen</a>
+<?php else: ?>
 
-            <?php else: ?>
+    <a href="login.php">Inloggen</a>
+    <a href="register.php">Registreren</a>
 
-                <a href="login.php">Inloggen</a>
-                <a href="register.php">Registreren</a>
-
-            <?php endif; ?>
+<?php endif; ?>
         </nav>
     </header>
 
