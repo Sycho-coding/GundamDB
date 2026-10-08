@@ -2,6 +2,12 @@
 
 session_start();
 
+$reviewErrors = $_SESSION['review_errors'] ?? [];
+$oldReviewText = $_SESSION['review_text'] ?? '';
+
+unset($_SESSION['review_errors']);
+unset($_SESSION['review_text']);
+
 require_once __DIR__ . '/config/database.php';
 
 $kitId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -35,6 +41,28 @@ if (!$kit) {
     http_response_code(404);
     die('Modelkit niet gevonden.');
 }
+
+$sql = "
+    SELECT
+        reviews.review_id,
+        reviews.rating,
+        reviews.review_text,
+        reviews.created_at,
+        reviews.user_id,
+        users.username
+    FROM reviews
+    INNER JOIN users
+        ON reviews.user_id = users.user_id
+    WHERE reviews.kit_id = :kit_id
+    ORDER BY reviews.created_at DESC
+";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    'kit_id' => $kitId
+]);
+
+$reviews = $stmt->fetchAll();
 
 ?>
 
@@ -164,6 +192,117 @@ if (!$kit) {
     </form>
 
 <?php endif; ?>
+
+<section>
+
+    <h3>Review plaatsen</h3>
+
+    <?php if (isset($_SESSION['user_id'])): ?>
+
+        <?php if (!empty($reviewErrors)): ?>
+
+            <div>
+                <ul>
+                    <?php foreach ($reviewErrors as $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+
+        <?php endif; ?>
+
+        <form method="POST" action="review_add.php">
+
+            <input
+                type="hidden"
+                name="kit_id"
+                value="<?= $kit['kit_id'] ?>"
+            >
+
+            <div>
+                <label for="rating">Beoordeling</label>
+
+                <select
+                    name="rating"
+                    id="rating"
+                    required
+                >
+                    <option value="">Kies een beoordeling</option>
+                    <option value="1">1 ster</option>
+                    <option value="2">2 sterren</option>
+                    <option value="3">3 sterren</option>
+                    <option value="4">4 sterren</option>
+                    <option value="5">5 sterren</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="review_text">Review</label>
+
+                <textarea
+                    name="review_text"
+                    id="review_text"
+                    maxlength="1000"
+                    required
+                ><?= htmlspecialchars($oldReviewText) ?></textarea>
+            </div>
+
+            <button type="submit">
+                Review plaatsen
+            </button>
+
+        </form>
+
+    <?php else: ?>
+
+        <p>
+            <a href="login.php">
+                Log in om een review te plaatsen.
+            </a>
+        </p>
+
+    <?php endif; ?>
+
+</section>
+
+<section>
+
+    <h3>Reviews</h3>
+
+    <?php if (empty($reviews)): ?>
+
+        <p>Er zijn nog geen reviews geplaatst.</p>
+
+    <?php else: ?>
+
+        <?php foreach ($reviews as $review): ?>
+
+            <article>
+
+                <h4>
+                    <?= htmlspecialchars($review['username']) ?>
+                </h4>
+
+                <p>
+                    Beoordeling:
+                    <?= htmlspecialchars($review['rating']) ?>/5
+                </p>
+
+                <p>
+                    <?= nl2br(htmlspecialchars($review['review_text'])) ?>
+                </p>
+
+                <small>
+                    <?= htmlspecialchars($review['created_at']) ?>
+                </small>
+
+            </article>
+
+        <?php endforeach; ?>
+
+    <?php endif; ?>
+
+</section>
 
     </main>
 
