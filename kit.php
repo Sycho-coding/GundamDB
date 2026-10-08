@@ -147,6 +147,24 @@ if (!$kit) {
 
 <?php endif; ?>
 
+<?php if (isset($_SESSION['user_id'])): ?>
+
+    <form method="POST" action="collection_add.php">
+
+        <input
+            type="hidden"
+            name="kit_id"
+            value="<?= $kit['kit_id'] ?>"
+        >
+
+        <button type="submit">
+            Toevoegen aan collectie
+        </button>
+
+    </form>
+
+<?php endif; ?>
+
     </main>
 
 </body>

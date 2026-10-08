@@ -76,7 +76,8 @@ $kits = $stmt->fetchAll();
     <span>
         Welkom, <?= htmlspecialchars($_SESSION['username']) ?>
     </span>
-
+    
+    <a href="collection.php">Mijn collectie</a>
     <a href="wishlist.php">Mijn wishlist</a>
     <a href="logout.php">Uitloggen</a>
 
