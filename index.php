@@ -4,6 +4,15 @@ session_start();
 
 require_once __DIR__ . '/config/database.php';
 
+$search = trim($_GET['search'] ?? '');
+$grade = trim($_GET['grade'] ?? '');
+
+$allowedGrades = ['HG', 'RG', 'MG', 'PG'];
+
+if ($grade !== '' && !in_array($grade, $allowedGrades, true)) {
+    $grade = '';
+}
+
 $sql = "
     SELECT
         kit_id,
@@ -13,10 +22,36 @@ $sql = "
         release_year,
         image_path
     FROM gunpla_kits
-    ORDER BY name ASC
+    WHERE 1 = 1
 ";
 
-$stmt = $pdo->query($sql);
+$params = [];
+
+if ($search !== '') {
+    $sql .= "
+        AND (
+            name LIKE :search_name
+            OR series LIKE :search_series
+        )
+    ";
+
+    $params['search_name'] = '%' . $search . '%';
+    $params['search_series'] = '%' . $search . '%';
+}
+
+if ($grade !== '') {
+    $sql .= "
+        AND grade = :grade
+    ";
+
+    $params['grade'] = $grade;
+}
+
+$sql .= " ORDER BY name ASC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+
 $kits = $stmt->fetchAll();
 
 ?>
@@ -58,9 +93,71 @@ $kits = $stmt->fetchAll();
 
         <h2>Gunpla modelkits</h2>
 
+        <form method="GET" action="index.php">
+
+    <div>
+        <label for="search">Zoeken</label>
+
+        <input
+            type="text"
+            id="search"
+            name="search"
+            placeholder="Zoek op naam of serie"
+            value="<?= htmlspecialchars($search) ?>"
+        >
+    </div>
+
+    <div>
+        <label for="grade">Grade</label>
+
+        <select id="grade" name="grade">
+
+            <option value="">Alle grades</option>
+
+            <option
+                value="HG"
+                <?= $grade === 'HG' ? 'selected' : '' ?>
+            >
+                HG
+            </option>
+
+            <option
+                value="RG"
+                <?= $grade === 'RG' ? 'selected' : '' ?>
+            >
+                RG
+            </option>
+
+            <option
+                value="MG"
+                <?= $grade === 'MG' ? 'selected' : '' ?>
+            >
+                MG
+            </option>
+
+            <option
+                value="PG"
+                <?= $grade === 'PG' ? 'selected' : '' ?>
+            >
+                PG
+            </option>
+
+        </select>
+    </div>
+
+    <button type="submit">
+        Zoeken
+    </button>
+
+    <a href="index.php">
+        Reset
+    </a>
+
+</form>
+
         <?php if (empty($kits)): ?>
 
-            <p>Er zijn nog geen modelkits toegevoegd.</p>
+            <p>Geen modelkits gevonden.</p>
 
         <?php else: ?>
 
