@@ -4,7 +4,18 @@ session_start();
 
 require_once __DIR__ . '/config/database.php';
 
-$sql = "SELECT * FROM gunpla_kits";
+$sql = "
+    SELECT
+        kit_id,
+        name,
+        grade,
+        series,
+        release_year,
+        image_path
+    FROM gunpla_kits
+    ORDER BY name ASC
+";
+
 $stmt = $pdo->query($sql);
 $kits = $stmt->fetchAll();
 
@@ -15,55 +26,92 @@ $kits = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>GundamDB</title>
 </head>
 
 <body>
 
-<?php if (isset($_SESSION['user_id'])): ?>
+    <header>
+        <h1>GundamDB</h1>
 
-    <p>
-        Welkom, <?= htmlspecialchars($_SESSION['username']) ?>
-    </p>
+        <nav>
+            <a href="index.php">Home</a>
 
-    <p>
-        <a href="logout.php">Uitloggen</a>
-    </p>
+            <?php if (isset($_SESSION['user_id'])): ?>
 
-<?php else: ?>
+                <span>
+                    Welkom, <?= htmlspecialchars($_SESSION['username']) ?>
+                </span>
 
-    <p>
-        <a href="login.php">Inloggen</a>
-        |
-        <a href="register.php">Registreren</a>
-    </p>
+                <a href="logout.php">Uitloggen</a>
 
-<?php endif; ?>
+            <?php else: ?>
 
-    <h1>GundamDB</h1>
+                <a href="login.php">Inloggen</a>
+                <a href="register.php">Registreren</a>
 
-    <h2>Gunpla kits</h2>
+            <?php endif; ?>
+        </nav>
+    </header>
 
-    <?php foreach ($kits as $kit): ?>
+    <main>
 
-        <div>
-            <h3>
-                <?= htmlspecialchars($kit['name']) ?>
-            </h3>
+        <h2>Gunpla modelkits</h2>
 
-            <p>
-                Grade:
-                <?= htmlspecialchars($kit['grade']) ?>
-            </p>
+        <?php if (empty($kits)): ?>
 
-            <p>
-                Serie:
-                <?= htmlspecialchars($kit['series']) ?>
-            </p>
-        </div>
+            <p>Er zijn nog geen modelkits toegevoegd.</p>
 
-    <?php endforeach; ?>
+        <?php else: ?>
+
+            <?php foreach ($kits as $kit): ?>
+
+                <article>
+
+                    <?php if (!empty($kit['image_path'])): ?>
+
+                        <img
+                            src="<?= htmlspecialchars($kit['image_path']) ?>"
+                            alt="<?= htmlspecialchars($kit['name']) ?>"
+                            width="200"
+                        >
+
+                    <?php endif; ?>
+
+                    <h3>
+                        <?= htmlspecialchars($kit['name']) ?>
+                    </h3>
+
+                    <p>
+                        Grade:
+                        <?= htmlspecialchars($kit['grade']) ?>
+                    </p>
+
+                    <p>
+                        Serie:
+                        <?= htmlspecialchars($kit['series']) ?>
+                    </p>
+
+                    <?php if (!empty($kit['release_year'])): ?>
+
+                        <p>
+                            Uitgebracht:
+                            <?= htmlspecialchars($kit['release_year']) ?>
+                        </p>
+
+                    <?php endif; ?>
+
+                    <a href="kit.php?id=<?= $kit['kit_id'] ?>">
+                        Bekijk details
+                    </a>
+
+                </article>
+
+            <?php endforeach; ?>
+
+        <?php endif; ?>
+
+    </main>
 
 </body>
 </html>
