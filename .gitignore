@@ -1,0 +1,12 @@
+# Lokale databaseconfiguratie
+config/database.php
+
+# Environment bestanden
+.env
+
+# OS bestanden
+.DS_Store
+Thumbs.db
+
+# VS Code lokale instellingen
+.vscode/
