@@ -86,77 +86,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registreren - GundamDB</title>
-</head>
+<?php
+$pageTitle = 'Registreren - GundamDB';
 
-<body>
+require_once __DIR__ . '/includes/header.php';
+?>
+
+<section class="form-section">
 
     <h1>Account aanmaken</h1>
 
     <?php if (!empty($errors)): ?>
 
-        <div>
+        <div class="error-message">
+
             <ul>
+
                 <?php foreach ($errors as $error): ?>
-                    <li><?= htmlspecialchars($error) ?></li>
+
+                    <li>
+                        <?= htmlspecialchars($error) ?>
+                    </li>
+
                 <?php endforeach; ?>
+
             </ul>
+
         </div>
 
     <?php endif; ?>
 
-    <form method="POST" action="">
+    <form method="POST">
 
         <div>
-            <label for="username">Gebruikersnaam</label>
+
+            <label for="username">
+                Gebruikersnaam
+            </label>
+
             <input
                 type="text"
                 id="username"
                 name="username"
                 value="<?= htmlspecialchars($username) ?>"
-                required
-            >
+                required>
+
         </div>
 
         <div>
-            <label for="email">E-mailadres</label>
+
+            <label for="email">
+                E-mailadres
+            </label>
+
             <input
                 type="email"
                 id="email"
                 name="email"
                 value="<?= htmlspecialchars($email) ?>"
-                required
-            >
+                required>
+
         </div>
 
         <div>
-            <label for="password">Wachtwoord</label>
+
+            <label for="password">
+                Wachtwoord
+            </label>
+
             <input
                 type="password"
                 id="password"
                 name="password"
-                required
-            >
+                required>
+
         </div>
 
         <div>
-            <label for="password_confirm">Herhaal wachtwoord</label>
+
+            <label for="password_confirm">
+                Herhaal wachtwoord
+            </label>
+
             <input
                 type="password"
                 id="password_confirm"
                 name="password_confirm"
-                required
-            >
+                required>
+
         </div>
 
-        <button type="submit">Registreren</button>
+        <button type="submit">
+            Registreren
+        </button>
 
     </form>
 
-</body>
-</html>
+    <p>
+        Al een account?
+        <a href="login.php">Inloggen</a>
+    </p>
+
+</section>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -19,74 +19,86 @@ $kits = $stmt->fetchAll();
 
 ?>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - GundamDB</title>
-</head>
+<?php
+$pageTitle = 'Admin - GundamDB';
 
-<body>
+require_once __DIR__ . '/../includes/header.php';
+?>
+
+<section class="page-header">
 
     <h1>Admin dashboard</h1>
 
-    <nav>
-        <a href="../index.php">Website</a>
-        <a href="kit_create.php">Nieuwe modelkit</a>
-        <a href="../logout.php">Uitloggen</a>
-    </nav>
+    <p>
+        Beheer de Gunpla modelkits in GundamDB.
+    </p>
 
-    <h2>Modelkits</h2>
+</section>
 
-    <?php if (empty($kits)): ?>
+<p>
+    <a href="kit_create.php">
+        Nieuwe modelkit toevoegen
+    </a>
+</p>
 
-        <p>Er zijn nog geen modelkits.</p>
+<?php if (empty($kits)): ?>
 
-    <?php else: ?>
+    <p>
+        Er zijn nog geen modelkits.
+    </p>
+
+<?php else: ?>
+
+    <div class="kit-grid">
 
         <?php foreach ($kits as $kit): ?>
 
-            <article>
+            <article class="kit-card">
 
-                <h3>
-                    <?= htmlspecialchars($kit['name']) ?>
-                </h3>
+                <div class="kit-card-content">
 
-                <p>
-                    <?= htmlspecialchars($kit['grade']) ?>
-                    -
-                    <?= htmlspecialchars($kit['series']) ?>
-                </p>
+                    <h2>
+                        <?= htmlspecialchars($kit['name']) ?>
+                    </h2>
 
-                <a href="kit_edit.php?id=<?= $kit['kit_id'] ?>">
-                    Bewerken
-                </a>
+                    <p>
+                        <strong>Grade:</strong>
+                        <?= htmlspecialchars($kit['grade']) ?>
+                    </p>
 
-                <form
-                    method="POST"
-                    action="kit_delete.php"
-                    style="display: inline;"
-                    onsubmit="return confirm('Weet je zeker dat je deze modelkit wilt verwijderen?');"
-                >
+                    <p>
+                        <strong>Serie:</strong>
+                        <?= htmlspecialchars($kit['series']) ?>
+                    </p>
 
-                    <input
-                        type="hidden"
-                        name="kit_id"
-                        value="<?= $kit['kit_id'] ?>"
-                    >
+                    <a href="kit_edit.php?id=<?= $kit['kit_id'] ?>">
+                        Bewerken
+                    </a>
 
-                    <button type="submit">
-                        Verwijderen
-                    </button>
+                    <form
+                        method="POST"
+                        action="kit_delete.php"
+                        onsubmit="return confirm('Weet je zeker dat je deze modelkit wilt verwijderen?');">
 
-                </form>
+                        <input
+                            type="hidden"
+                            name="kit_id"
+                            value="<?= $kit['kit_id'] ?>">
+
+                        <button type="submit">
+                            Verwijderen
+                        </button>
+
+                    </form>
+
+                </div>
 
             </article>
 
         <?php endforeach; ?>
 
-    <?php endif; ?>
+    </div>
 
-</body>
-</html>
+<?php endif; ?>
+
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

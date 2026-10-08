@@ -31,60 +31,65 @@ $collectionItems = $stmt->fetchAll();
 
 ?>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn collectie - GundamDB</title>
-</head>
+<?php
+$pageTitle = 'Mijn collectie - GundamDB';
 
-<body>
+require_once __DIR__ . '/includes/header.php';
+?>
 
-    <header>
-        <h1>Mijn collectie</h1>
+<section class="page-header">
 
-        <nav>
-            <a href="index.php">Home</a>
-            <a href="collection.php">Collectie</a>
-            <a href="wishlist.php">Wishlist</a>
-            <a href="logout.php">Uitloggen</a>
-        </nav>
-    </header>
+    <h1>Mijn collectie</h1>
 
-    <main>
+    <p>
+        Bekijk de Gunpla modelkits die je bezit.
+    </p>
 
-        <?php if (empty($collectionItems)): ?>
+</section>
 
-            <p>Je collectie is nog leeg.</p>
+<?php if (empty($collectionItems)): ?>
 
-        <?php else: ?>
+    <div class="empty-message">
 
-            <?php foreach ($collectionItems as $item): ?>
+        <p>
+            Je collectie is nog leeg.
+        </p>
 
-                <article>
+    </div>
 
-                    <?php if (!empty($item['image_path'])): ?>
+<?php else: ?>
+
+    <div class="kit-grid">
+
+        <?php foreach ($collectionItems as $item): ?>
+
+            <article class="kit-card">
+
+                <?php if (!empty($item['image_path'])): ?>
+
+                    <div class="kit-card-image">
 
                         <img
                             src="<?= htmlspecialchars($item['image_path']) ?>"
-                            alt="<?= htmlspecialchars($item['name']) ?>"
-                            width="200"
-                        >
+                            alt="<?= htmlspecialchars($item['name']) ?>">
 
-                    <?php endif; ?>
+                    </div>
+
+                <?php endif; ?>
+
+                <div class="kit-card-content">
 
                     <h2>
                         <?= htmlspecialchars($item['name']) ?>
                     </h2>
 
                     <p>
-                        Grade:
+                        <strong>Grade:</strong>
                         <?= htmlspecialchars($item['grade']) ?>
                     </p>
 
                     <p>
-                        Serie:
+                        <strong>Serie:</strong>
                         <?= htmlspecialchars($item['series']) ?>
                     </p>
 
@@ -97,8 +102,7 @@ $collectionItems = $stmt->fetchAll();
                         <input
                             type="hidden"
                             name="kit_id"
-                            value="<?= $item['kit_id'] ?>"
-                        >
+                            value="<?= $item['kit_id'] ?>">
 
                         <button type="submit">
                             Verwijder uit collectie
@@ -106,13 +110,14 @@ $collectionItems = $stmt->fetchAll();
 
                     </form>
 
-                </article>
+                </div>
 
-            <?php endforeach; ?>
+            </article>
 
-        <?php endif; ?>
+        <?php endforeach; ?>
 
-    </main>
+    </div>
 
-</body>
-</html>
+<?php endif; ?>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

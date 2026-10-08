@@ -31,59 +31,65 @@ $wishlistItems = $stmt->fetchAll();
 
 ?>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn wishlist - GundamDB</title>
-</head>
+<?php
+$pageTitle = 'Mijn wishlist - GundamDB';
 
-<body>
+require_once __DIR__ . '/includes/header.php';
+?>
 
-    <header>
-        <h1>Mijn wishlist</h1>
+<section class="page-header">
 
-        <nav>
-            <a href="index.php">Home</a>
-            <a href="wishlist.php">Wishlist</a>
-            <a href="logout.php">Uitloggen</a>
-        </nav>
-    </header>
+    <h1>Mijn wishlist</h1>
 
-    <main>
+    <p>
+        Gunpla modelkits die je nog wilt toevoegen aan je collectie.
+    </p>
 
-        <?php if (empty($wishlistItems)): ?>
+</section>
 
-            <p>Je wishlist is nog leeg.</p>
+<?php if (empty($wishlistItems)): ?>
 
-        <?php else: ?>
+    <div class="empty-message">
 
-            <?php foreach ($wishlistItems as $item): ?>
+        <p>
+            Je wishlist is nog leeg.
+        </p>
 
-                <article>
+    </div>
 
-                    <?php if (!empty($item['image_path'])): ?>
+<?php else: ?>
+
+    <div class="kit-grid">
+
+        <?php foreach ($wishlistItems as $item): ?>
+
+            <article class="kit-card">
+
+                <?php if (!empty($item['image_path'])): ?>
+
+                    <div class="kit-card-image">
 
                         <img
                             src="<?= htmlspecialchars($item['image_path']) ?>"
-                            alt="<?= htmlspecialchars($item['name']) ?>"
-                            width="200"
-                        >
+                            alt="<?= htmlspecialchars($item['name']) ?>">
 
-                    <?php endif; ?>
+                    </div>
+
+                <?php endif; ?>
+
+                <div class="kit-card-content">
 
                     <h2>
                         <?= htmlspecialchars($item['name']) ?>
                     </h2>
 
                     <p>
-                        Grade:
+                        <strong>Grade:</strong>
                         <?= htmlspecialchars($item['grade']) ?>
                     </p>
 
                     <p>
-                        Serie:
+                        <strong>Serie:</strong>
                         <?= htmlspecialchars($item['series']) ?>
                     </p>
 
@@ -91,28 +97,27 @@ $wishlistItems = $stmt->fetchAll();
                         Bekijk details
                     </a>
 
-                    <form
-                        method="POST"
-                        action="wishlist_remove.php"
-                    >
+                    <form method="POST" action="wishlist_remove.php">
+
                         <input
                             type="hidden"
                             name="kit_id"
-                            value="<?= $item['kit_id'] ?>"
-                        >
+                            value="<?= $item['kit_id'] ?>">
 
                         <button type="submit">
                             Verwijder uit wishlist
                         </button>
+
                     </form>
 
-                </article>
+                </div>
 
-            <?php endforeach; ?>
+            </article>
 
-        <?php endif; ?>
+        <?php endforeach; ?>
 
-    </main>
+    </div>
 
-</body>
-</html>
+<?php endif; ?>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -54,164 +54,182 @@ $stmt->execute($params);
 
 $kits = $stmt->fetchAll();
 
+$pageTitle = 'GundamDB';
+
+require_once __DIR__ . '/includes/header.php';
+
 ?>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GundamDB</title>
-</head>
+<section class="page-header">
 
-<body>
+    <h1>Gunpla modelkits</h1>
 
-    <header>
-        <h1>GundamDB</h1>
+    <p>
+        Bekijk verschillende Gunpla modelkits, zoek op naam of serie
+        en filter op grade.
+    </p>
 
-        <nav>
-            <a href="index.php">Home</a>
-<?php if (isset($_SESSION['user_id'])): ?>
+</section>
 
-    <span>
-        Welkom, <?= htmlspecialchars($_SESSION['username']) ?>
-    </span>
-     <?php if ($_SESSION['role'] === 'admin'): ?>
-        <a href="admin/index.php">Admin</a>
-    <?php endif; ?>
-    <a href="collection.php">Mijn collectie</a>
-    <a href="wishlist.php">Mijn wishlist</a>
-    <a href="logout.php">Uitloggen</a>
+<section class="search-section">
 
-<?php else: ?>
+    <form
+        class="search-form"
+        method="GET"
+        action="index.php">
 
-    <a href="login.php">Inloggen</a>
-    <a href="register.php">Registreren</a>
+        <div class="search-field">
 
-<?php endif; ?>
-        </nav>
-    </header>
+            <label for="search">
+                Zoeken
+            </label>
 
-    <main>
+            <input
+                type="text"
+                id="search"
+                name="search"
+                placeholder="Zoek op naam of serie"
+                value="<?= htmlspecialchars($search) ?>">
 
-        <h2>Gunpla modelkits</h2>
+        </div>
 
-        <form method="GET" action="index.php">
+        <div class="search-field">
 
-    <div>
-        <label for="search">Zoeken</label>
+            <label for="grade">
+                Grade
+            </label>
 
-        <input
-            type="text"
-            id="search"
-            name="search"
-            placeholder="Zoek op naam of serie"
-            value="<?= htmlspecialchars($search) ?>"
-        >
-    </div>
+            <select
+                id="grade"
+                name="grade">
 
-    <div>
-        <label for="grade">Grade</label>
+                <option value="">
+                    Alle grades
+                </option>
 
-        <select id="grade" name="grade">
+                <option
+                    value="HG"
+                    <?= $grade === 'HG' ? 'selected' : '' ?>>
+                    HG
+                </option>
 
-            <option value="">Alle grades</option>
+                <option
+                    value="RG"
+                    <?= $grade === 'RG' ? 'selected' : '' ?>>
+                    RG
+                </option>
 
-            <option
-                value="HG"
-                <?= $grade === 'HG' ? 'selected' : '' ?>
-            >
-                HG
-            </option>
+                <option
+                    value="MG"
+                    <?= $grade === 'MG' ? 'selected' : '' ?>>
+                    MG
+                </option>
 
-            <option
-                value="RG"
-                <?= $grade === 'RG' ? 'selected' : '' ?>
-            >
-                RG
-            </option>
+                <option
+                    value="PG"
+                    <?= $grade === 'PG' ? 'selected' : '' ?>>
+                    PG
+                </option>
 
-            <option
-                value="MG"
-                <?= $grade === 'MG' ? 'selected' : '' ?>
-            >
-                MG
-            </option>
+            </select>
 
-            <option
-                value="PG"
-                <?= $grade === 'PG' ? 'selected' : '' ?>
-            >
-                PG
-            </option>
+        </div>
 
-        </select>
-    </div>
+        <div class="search-actions">
 
-    <button type="submit">
-        Zoeken
-    </button>
+            <button type="submit">
+                Zoeken
+            </button>
 
-    <a href="index.php">
-        Reset
-    </a>
+            <a
+                class="reset-link"
+                href="index.php">
+                Reset
+            </a>
 
-</form>
+        </div>
 
-        <?php if (empty($kits)): ?>
+    </form>
 
-            <p>Geen modelkits gevonden.</p>
+</section>
 
-        <?php else: ?>
+<section class="kits-section">
+
+    <?php if (empty($kits)): ?>
+
+        <div class="empty-message">
+
+            <p>
+                Geen modelkits gevonden.
+            </p>
+
+        </div>
+
+    <?php else: ?>
+
+        <div class="kit-grid">
 
             <?php foreach ($kits as $kit): ?>
 
-                <article>
+                <article class="kit-card">
 
                     <?php if (!empty($kit['image_path'])): ?>
 
-                        <img
-                            src="<?= htmlspecialchars($kit['image_path']) ?>"
-                            alt="<?= htmlspecialchars($kit['name']) ?>"
-                            width="200"
-                        >
+                        <div class="kit-card-image">
+
+                            <img
+                                src="<?= htmlspecialchars($kit['image_path']) ?>"
+                                alt="<?= htmlspecialchars($kit['name']) ?>">
+
+                        </div>
 
                     <?php endif; ?>
 
-                    <h3>
-                        <?= htmlspecialchars($kit['name']) ?>
-                    </h3>
+                    <div class="kit-card-content">
 
-                    <p>
-                        Grade:
-                        <?= htmlspecialchars($kit['grade']) ?>
-                    </p>
-
-                    <p>
-                        Serie:
-                        <?= htmlspecialchars($kit['series']) ?>
-                    </p>
-
-                    <?php if (!empty($kit['release_year'])): ?>
+                        <h2>
+                            <?= htmlspecialchars($kit['name']) ?>
+                        </h2>
 
                         <p>
-                            Uitgebracht:
-                            <?= htmlspecialchars($kit['release_year']) ?>
+                            <strong>Grade:</strong>
+                            <?= htmlspecialchars($kit['grade']) ?>
                         </p>
 
-                    <?php endif; ?>
+                        <p>
+                            <strong>Serie:</strong>
+                            <?= htmlspecialchars($kit['series']) ?>
+                        </p>
 
-                    <a href="kit.php?id=<?= $kit['kit_id'] ?>">
-                        Bekijk details
-                    </a>
+                        <?php if (!empty($kit['release_year'])): ?>
+
+                            <p>
+                                <strong>Releasejaar:</strong>
+                                <?= htmlspecialchars($kit['release_year']) ?>
+                            </p>
+
+                        <?php endif; ?>
+
+                        <a
+                            class="detail-link"
+                            href="kit.php?id=<?= $kit['kit_id'] ?>">
+                            Bekijk details
+                        </a>
+
+                    </div>
 
                 </article>
 
             <?php endforeach; ?>
 
-        <?php endif; ?>
+        </div>
 
-    </main>
+    <?php endif; ?>
 
-</body>
-</html>
+</section>
+
+<?php
+
+require_once __DIR__ . '/includes/footer.php';
+
+?>

@@ -50,58 +50,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inloggen - GundamDB</title>
-</head>
+<?php
+$pageTitle = 'Inloggen - GundamDB';
 
-<body>
+require_once __DIR__ . '/includes/header.php';
+?>
+
+<section class="form-section">
 
     <h1>Inloggen</h1>
 
     <?php if (isset($_GET['registered'])): ?>
-        <p>Account succesvol aangemaakt. Je kunt nu inloggen.</p>
-    <?php endif; ?>
 
-    <?php if (!empty($errors)): ?>
-
-        <div>
-            <ul>
-                <?php foreach ($errors as $error): ?>
-                    <li><?= htmlspecialchars($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
+        <div class="success-message">
+            Account succesvol aangemaakt. Je kunt nu inloggen.
         </div>
 
     <?php endif; ?>
 
-    <form method="POST" action="">
+    <?php if (!empty($errors)): ?>
+
+        <div class="error-message">
+
+            <ul>
+
+                <?php foreach ($errors as $error): ?>
+
+                    <li>
+                        <?= htmlspecialchars($error) ?>
+                    </li>
+
+                <?php endforeach; ?>
+
+            </ul>
+
+        </div>
+
+    <?php endif; ?>
+
+    <form method="POST">
 
         <div>
-            <label for="email">E-mailadres</label>
+
+            <label for="email">
+                E-mailadres
+            </label>
+
             <input
                 type="email"
                 id="email"
                 name="email"
                 value="<?= htmlspecialchars($email) ?>"
-                required
-            >
+                required>
+
         </div>
 
         <div>
-            <label for="password">Wachtwoord</label>
+
+            <label for="password">
+                Wachtwoord
+            </label>
+
             <input
                 type="password"
                 id="password"
                 name="password"
-                required
-            >
+                required>
+
         </div>
 
-        <button type="submit">Inloggen</button>
+        <button type="submit">
+            Inloggen
+        </button>
 
     </form>
 
@@ -110,5 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="register.php">Registreren</a>
     </p>
 
-</body>
-</html>
+</section>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

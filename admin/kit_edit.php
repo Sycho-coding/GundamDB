@@ -91,111 +91,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelkit bewerken - GundamDB</title>
-</head>
+<?php
+$pageTitle = 'Modelkit bewerken - GundamDB';
 
-<body>
+require_once __DIR__ . '/../includes/header.php';
+?>
 
-    <h1>Modelkit bewerken</h1>
 
-    <a href="index.php">Terug</a>
 
-    <?php if (!empty($errors)): ?>
+<h1>Modelkit bewerken</h1>
 
-        <ul>
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
+<a href="index.php">Terug</a>
+
+<?php if (!empty($errors)): ?>
+
+    <ul>
+        <?php foreach ($errors as $error): ?>
+            <li><?= htmlspecialchars($error) ?></li>
+        <?php endforeach; ?>
+    </ul>
+
+<?php endif; ?>
+
+<form method="POST">
+
+    <div>
+        <label for="name">Naam</label>
+
+        <input
+            type="text"
+            id="name"
+            name="name"
+            value="<?= htmlspecialchars($kit['name']) ?>"
+            required>
+    </div>
+
+    <div>
+        <label for="grade">Grade</label>
+
+        <select id="grade" name="grade" required>
+
+            <?php foreach ($allowedGrades as $allowedGrade): ?>
+
+                <option
+                    value="<?= $allowedGrade ?>"
+                    <?= $kit['grade'] === $allowedGrade ? 'selected' : '' ?>>
+                    <?= $allowedGrade ?>
+                </option>
+
             <?php endforeach; ?>
-        </ul>
 
-    <?php endif; ?>
+        </select>
+    </div>
 
-    <form method="POST">
+    <div>
+        <label for="series">Serie</label>
 
-        <div>
-            <label for="name">Naam</label>
+        <input
+            type="text"
+            id="series"
+            name="series"
+            value="<?= htmlspecialchars($kit['series']) ?>"
+            required>
+    </div>
 
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value="<?= htmlspecialchars($kit['name']) ?>"
-                required
-            >
-        </div>
+    <div>
+        <label for="release_year">Releasejaar</label>
 
-        <div>
-            <label for="grade">Grade</label>
+        <input
+            type="number"
+            id="release_year"
+            name="release_year"
+            value="<?= htmlspecialchars((string)$kit['release_year']) ?>">
+    </div>
 
-            <select id="grade" name="grade" required>
+    <div>
+        <label for="image_path">Afbeeldingspad</label>
 
-                <?php foreach ($allowedGrades as $allowedGrade): ?>
+        <input
+            type="text"
+            id="image_path"
+            name="image_path"
+            value="<?= htmlspecialchars((string)$kit['image_path']) ?>">
+    </div>
 
-                    <option
-                        value="<?= $allowedGrade ?>"
-                        <?= $kit['grade'] === $allowedGrade ? 'selected' : '' ?>
-                    >
-                        <?= $allowedGrade ?>
-                    </option>
+    <div>
+        <label for="description">Beschrijving</label>
 
-                <?php endforeach; ?>
+        <textarea
+            id="description"
+            name="description"><?= htmlspecialchars((string)$kit['description']) ?></textarea>
+    </div>
 
-            </select>
-        </div>
+    <button type="submit">
+        Wijzigingen opslaan
+    </button>
 
-        <div>
-            <label for="series">Serie</label>
+</form>
 
-            <input
-                type="text"
-                id="series"
-                name="series"
-                value="<?= htmlspecialchars($kit['series']) ?>"
-                required
-            >
-        </div>
 
-        <div>
-            <label for="release_year">Releasejaar</label>
-
-            <input
-                type="number"
-                id="release_year"
-                name="release_year"
-                value="<?= htmlspecialchars((string)$kit['release_year']) ?>"
-            >
-        </div>
-
-        <div>
-            <label for="image_path">Afbeeldingspad</label>
-
-            <input
-                type="text"
-                id="image_path"
-                name="image_path"
-                value="<?= htmlspecialchars((string)$kit['image_path']) ?>"
-            >
-        </div>
-
-        <div>
-            <label for="description">Beschrijving</label>
-
-            <textarea
-                id="description"
-                name="description"
-            ><?= htmlspecialchars((string)$kit['description']) ?></textarea>
-        </div>
-
-        <button type="submit">
-            Wijzigingen opslaan
-        </button>
-
-    </form>
-
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
