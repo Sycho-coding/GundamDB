@@ -76,7 +76,9 @@ $kits = $stmt->fetchAll();
     <span>
         Welkom, <?= htmlspecialchars($_SESSION['username']) ?>
     </span>
-    
+     <?php if ($_SESSION['role'] === 'admin'): ?>
+        <a href="admin/index.php">Admin</a>
+    <?php endif; ?>
     <a href="collection.php">Mijn collectie</a>
     <a href="wishlist.php">Mijn wishlist</a>
     <a href="logout.php">Uitloggen</a>
