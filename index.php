@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once __DIR__ . '/config/database.php';
 
 $sql = "SELECT * FROM gunpla_kits";
@@ -18,6 +20,26 @@ $kits = $stmt->fetchAll();
 </head>
 
 <body>
+
+<?php if (isset($_SESSION['user_id'])): ?>
+
+    <p>
+        Welkom, <?= htmlspecialchars($_SESSION['username']) ?>
+    </p>
+
+    <p>
+        <a href="logout.php">Uitloggen</a>
+    </p>
+
+<?php else: ?>
+
+    <p>
+        <a href="login.php">Inloggen</a>
+        |
+        <a href="register.php">Registreren</a>
+    </p>
+
+<?php endif; ?>
 
     <h1>GundamDB</h1>
 
